@@ -7,11 +7,15 @@ See the License for the specific language governing permissions and limitations 
 */
 
 
-
+/* Amplify Params - DO NOT EDIT
+	ENV
+	REGION
+Amplify Params - DO NOT EDIT */
 
 const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+const fetch = require('node-fetch');
 
 // declare a new express app
 const app = express()
@@ -66,7 +70,7 @@ app.use(function(req, res, next) {
  * Example get method *
  **********************/
 
-app.get('/mp/profile', async function(req, res) {
+app.get('/profile', async function(req, res) {
   // Add your code here
   if(req.query['mPID']) {
     var user_profile = await request_user_profile(req.query['wSID'], req.query['mPID']);
@@ -74,11 +78,11 @@ app.get('/mp/profile', async function(req, res) {
       user_profile
     });
   } else {
-    res.send({});
+    res.json({void: 'get call void!', url: req.url});
   }
 });
 
-app.get('/mp/profile/*', function(req, res) {
+app.get('/item/*', function(req, res) {
   // Add your code here
   res.json({success: 'get call succeed!', url: req.url});
 });
@@ -87,12 +91,12 @@ app.get('/mp/profile/*', function(req, res) {
 * Example post method *
 ****************************/
 
-app.post('/mp/profile', function(req, res) {
+app.post('/item', function(req, res) {
   // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 
-app.post('/mp/profile/*', function(req, res) {
+app.post('/item/*', function(req, res) {
   // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
@@ -101,12 +105,12 @@ app.post('/mp/profile/*', function(req, res) {
 * Example put method *
 ****************************/
 
-app.put('/mp/profile', function(req, res) {
+app.put('/item', function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
 
-app.put('/mp/profile/*', function(req, res) {
+app.put('/item/*', function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
@@ -115,17 +119,17 @@ app.put('/mp/profile/*', function(req, res) {
 * Example delete method *
 ****************************/
 
-app.delete('/mp/profile', function(req, res) {
+app.delete('/item', function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });
 
-app.delete('/mp/profile/*', function(req, res) {
+app.delete('/item/*', function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });
 
-app.listen(443, function() {
+app.listen(3000, function() {
     console.log("App started")
 });
 

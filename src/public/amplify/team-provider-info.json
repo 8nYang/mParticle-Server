@@ -1,4 +1,25 @@
 {
+  "main": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-mparticleprofileserv-main-215459-authRole",
+      "UnauthRoleArn": "arn:aws:iam::929406588007:role/amplify-mparticleprofileserv-main-215459-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::929406588007:role/amplify-mparticleprofileserv-main-215459-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-mparticleprofileserv-main-215459-deployment",
+      "UnauthRoleName": "amplify-mparticleprofileserv-main-215459-unauthRole",
+      "StackName": "amplify-mparticleprofileserv-main-215459",
+      "StackId": "arn:aws:cloudformation:us-east-1:929406588007:stack/amplify-mparticleprofileserv-main-215459/f73abcc0-7c25-11ee-9fed-0aa3f2efefed",
+      "AmplifyAppId": "d3fpzjc6f5l535"
+    },
+    "categories": {
+      "function": {
+        "ProfileAPI": {
+          "deploymentBucketName": "amplify-mparticleprofileserv-main-215459-deployment",
+          "s3Key": "amplify-builds/ProfileAPI-384b6c7a5546614d3869-build.zip"
+        }
+      }
+    }
+  },
   "staging": {
     "awscloudformation": {
       "AuthRoleName": "amplify-amplifyc54ea8d6f2fc4-staging-201623-authRole",

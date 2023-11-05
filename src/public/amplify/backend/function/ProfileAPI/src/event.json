@@ -1,8 +1,9 @@
 {
-  "httpMethod": "POST",
-  "path": "/item",
+  "httpMethod": "GET",
+  "path": "/profile",
   "queryStringParameters": {
-    "limit": "10"
+    "wSID": "903",
+    "mPID": "8343254695870993776"
   },
   "headers": {
     "Content-Type": "application/json"

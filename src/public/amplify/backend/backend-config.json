@@ -1,25 +1,29 @@
 {
-  "api": {
-    "ProfileAPI": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
-          "resourceName": "mpprofileapi"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "API Gateway"
-    }
-  },
+  "api": {},
   "function": {
-    "mpprofileapi": {
+    "ProfileAPI": {
       "build": true,
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_ProfileAPI_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ProfileAPI"
+        }
+      ]
+    },
+    "AMPLIFY_function_ProfileAPI_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ProfileAPI"
+        }
+      ]
     }
   }
 }
