@@ -33,7 +33,7 @@ const app = https.createServer(options, function (request, response) {
   });
 }).listen(443);*/
 
-https
+/*https
     .createServer(
         {
           key: fs.readFileSync("/usr/local/etc/nginx/key.pem"),
@@ -49,7 +49,7 @@ http
         app
     ).listen(80, ()=>{
         console.log('server is runing at port 80')
-    });
+    });*/
 
 // log requests
 app.use(cors());
