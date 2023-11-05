@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="mParticle Single Page App"
+    />
+    
+    <script type="text/javascript">
+      let WEBKEY = localStorage.mpKey ? localStorage.mpKey : "us2-5844b462fde9e846af3c4ed52516e61a"
+      window.mParticle = {
+        config: {
+          isDevelopmentMode: true,
+          identityCallback: function(result) {
+            let currentUser = result.getUser()
+              if (currentUser) {
+                let paramsToUAs = [
+                  "utm_source",
+                  "utm_medium",
+                  "utm_term",
+                  "utm_content",
+                  "utm_campaign",
+                  "gclid",
+                  "campaign_id"
+                ]
+                // Add UTM Attribution to UAs
+                let url = new URL(window.location.href)
+                url.searchParams.forEach((value,key)=>{
+                  if (paramsToUAs.includes(key)){
+                    currentUser.setUserAttribute(`$${key}`,value)
+                  }
+                })
+                //request_user_profile(currentUser.getMPID())
+                //updateUserIdentites(currentUser)
+              }
+          }
+        }
+      };
+
+      (
+        function(t){window.mParticle=window.mParticle||{};
+        window.mParticle.EventType={Unknown:0,Navigation:1,Location:2,Search:3,Transaction:4,UserContent:5,UserPreference:6,Social:7,Other:8};
+        window.mParticle.eCommerce={Cart:{}};window.mParticle.Identity={};
+        window.mParticle.config=window.mParticle.config||{};
+        window.mParticle.config.rq=[];
+        window.mParticle.config.snippetVersion=2.2;
+        window.mParticle.ready=function(t){
+          window.mParticle.config.rq.push(t)
+        };
+        var e=["endSession","logError","logBaseEvent","logEvent","logForm","logLink","logPageView","setSessionAttribute","setAppName","setAppVersion","setOptOut","setPosition","startNewSession","startTrackingLocation","stopTrackingLocation"];
+        var o=["setCurrencyCode","logCheckout"];
+        var i=["identify","login","logout","modify"];
+        e.forEach(function(t){
+          window.mParticle[t]=n(t)
+        });
+        o.forEach(function(t){
+          window.mParticle.eCommerce[t]=n(t,"eCommerce")
+        });
+        i.forEach(function(t){
+          window.mParticle.Identity[t]=n(t,"Identity")
+        });
+        function n(e,o){
+          return function(){
+            if(o){e=o+"."+e}
+            var t=Array.prototype.slice.call(arguments);
+            t.unshift(e);
+            window.mParticle.config.rq.push(t)
+          }
+        }
+        var mp=document.createElement("script");
+        mp.type="text/javascript";
+        mp.async=true;
+        mp.src=("https:"==document.location.protocol?"https://jssdkcdns":"http://jssdkcdn")+".mparticle.com/js/v2/"+t+"/mparticle.js";
+        var c=document.getElementsByTagName("script")[0];
+        c.parentNode.insertBefore(mp,c)
+        mParticle.config.logLevel = 'verbose'
+      })(WEBKEY);
+      function setPrice() {
+        var x = document.getElementById("service_price");
+        var y = document.getElementById("service_item");
+        x.value = "€" + y.options[y.selectedIndex].getAttribute("price") + "/month";
+      }
+    </script>
+    <script src='vb-index.js'></script>
+    <style>
+      .split {
+        height: 100%;
+        position: fixed;
+        z-index: 1;
+        overflow-x: hidden;
+      }
+
+      .left {
+        left: 350;
+        width: 60%;
+      }
+
+      .right {
+        width: 40%;
+        right: 0;
+      }
+      #current-user thead {
+        border: 1px solid black;
+      }
+      #current-user tbody {
+        border: 1px solid black;
+      }
+      #current-user tr {
+        border: 1px solid black;
+      }
+      #current-user th {
+        border: 1px solid black;
+      }
+      #current-user td {
+        border: 1px solid black;
+      }
+      #user-audiences thead {
+        border: 1px solid black;
+      }
+      #user-audiences tbody {
+        border: 1px solid black;
+      }
+      #user-audiences tr {
+        border: 1px solid black;
+      }
+      #user-audiences th {
+        border: 1px solid black;
+      }
+      #user-audiences td {
+        border: 1px solid black;
+      }
+      th, td {
+        border: 1px solid black;
+      }
+    </style>
+    <title>Call Centre Customer Profiling</title>
+  </head>
+  <body>
+    <h1><img src='img/vb_logo.png' style="width:180px;">&nbsp;&nbsp;Customer Service Application&nbsp;&nbsp;<img src='img/vb_service.png' style="width:245px;height:60px"></h1>
+    <div class="split left">
+      <div>
+        <h2>User Search:</h2>
+        <form id='form-1'>
+          <table>
+            <tr>
+              <td>Mobile Number:</td>
+              <td><input type='text' onfocus="this.value='';this.flag=1" flag=0 value='<+32-xxx-xxxxxx>'/></td>
+            </tr>
+            <tr>
+              <td>Customer ID:</td>
+              <td><input type='text' onfocus="this.value='';this.flag=1" flag=0 value='<987xxxxx>'/></td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td><input type='text' onfocus="this.value='';this.flag=1" flag=0 value='<demo@mp.com>'/></td>
+            </tr>
+            <tr>
+              <td>
+                <input type='submit' value='Search'/>
+                <input type='button' value='Reset' id='logout'/>
+              </td>
+            </tr>
+          </table>
+        </form>
+        <div>
+          <p>
+            <table id="current-user" style="border: 1px solid black;table-layout:fixed;width:384px">
+            <tr>
+              <td width="96">System ID:</td>
+              <td></td>
+              </tr>
+            <tr>
+              <td width="96">Customer ID:</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td width="96">Email:</td>
+              <td></td>
+            </tr>
+            <!--
+            <tr>
+              <td width="96">Mobile:</td>
+              <td></td>
+            </tr>
+            -->
+            </table>
+          </p>
+        </div>
+      </div>
+      <div>
+        <h2>Customer Profile - Details:</h2>
+        <table id="user-profile" style="border: 1px solid black;table-layout:fixed;width:1024px">
+          <tbody>
+            <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+              <td rowspan="4" height="42" width="87" style="height:32.0pt;width:65pt"><b>Basic Info</b></td>
+              <td style=""><b>First Name</b></td>
+              <td style=""><b>Last Name</b></td>
+              <td style=""><b>Contact</b></td>
+              <td style=""><b>Region</b></td>
+              <td style=""><b>City</b></td>
+              <td style=""><b>Country</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+               <td height="21" style="height:16.0pt;">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+             </tr>
+             <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+               <td style=""><b>CLTV</b></td>
+               <td style=""><b>Average Order Value</b></td>
+               <td style=""><b># Orders</b></td>
+               <td style=""><b>Warranty List</b></td>
+               <td style=""><b>Product Interest List</b></td>
+               <td style=""><b># Repairs</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+               <td height="21" style="height:16.0pt;">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+             </tr>
+             <tr height="21" style="height:16.0pt">
+               <td rowspan="2" height="42" class="xl67" style="height:32.0pt;"><b>Recency</b></td>
+               <td style=""><b>Last Order Time</b></td>
+               <td style=""><b>Last Order Item</b></td>
+               <td style=""><b>Last Order Amount</b></td>
+               <td style=""><b>Last Payment Type</b></td>
+               <td style=""><b>Last Order Store</b></td>
+               <td style=""><b>Last Order Survey</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt">
+               <td height="21" class="xl65" style="height:16.0pt;">&nbsp;</td>
+               <td id="last_order_item" style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+            </tr>
+             <tr height="21" style="height:16.0pt">
+               <td rowspan="2" height="42" class="xl67" style="height:32.0pt;"><b>Preference</b></td>
+               <td style=""><b>Favourite Product</b></td>
+               <td style=""><b>Loyal Brand</b></td>
+               <td style=""><b>Favourite Store</b></td>
+               <td style=""><b>Purchased Category</b></td>
+               <td style=""><b>Next Best Offer</b></td>
+               <td style=""><b>Recommended Item</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt">
+               <td height="21" class="xl65" style="height:16.0pt;">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Audience Membership:</h2>
+        <table id="user-audiences" style="border: 1px solid black;table-layout:fixed;width:384px">
+         <thead>
+           <tr>
+             <td width=96>Audience ID</td>
+             <td>Audience Name</td>
+           </tr>
+         </thead>
+         <tbody id="user-audiences-body" >
+         </tbody>
+        </table>
+      </div>
+      <h4>Add New Attribute</h2>
+      <table id="user-attributes">
+      </table>
+      <tr>
+        <td><input type='text' value='User Attribute Name' onfocus="this.value=''" id='ua-key'/></td>
+        <td><input type='text' value='User Attribute Value' onfocus="this.value=''"id='ua-value'/></td>
+        <td><input type='button' value='Add User Attribute' id='ua-add'/></td>
+      </tr>
+    </div>
+    <div class="split right">
+      <table>
+        <tr>
+          <td >Web Key:</td>
+          <td>
+            <form id="update-web-key">
+              <input type='text' value="" id='web-key' size="37"/>
+              <input type='submit' value="update" />
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type='button' value="Clear Cookies" id='clear-cookies' />
+          </td>
+          <td>
+            <input type='button' value="Clear Demo Users" id='clear-test-users' />
+          </td>
+        </tr>
+      </table>
+        <div>
+          <h2>Purchase Services:</h2>
+          <form id='add-to-cart'>
+            <table>
+              <tr>
+                <td >Service:</td>
+                <td>
+                    <select name='service_item' id='service_item' onchange="setPrice()">
+                      <option value=''>--Select Service Item--</option>
+                      <option id='Serv-MSP001' value='Multimedia Service Pack' price='6.99'>Multimedia Service Pack</option>
+                      <option id='Serv-VBL002' value='Vanden Borre Life' price='14.99'>Vanden Borre Life</option>
+                      <option id='Serv-MSI003' value='Multimedia or smartphone insurance' price='2.99'>Multimedia or smartphone insurance</option>
+                      <option id='Serv-DRW004' value='Direct Replacement Warranty' price='5.99'>Direct Replacement Warranty</option>
+                      <option id='Serv-SPW005' value='Service Plus Warranty' price='12.00'>Service Plus Warranty</option>
+                    </select>
+                </td>
+              </tr>
+              <tr>
+                <td >Price:</td>
+                <td><input type='text' id='service_price' onfocus="" value='' disabled/></td>
+              </tr>
+              <tr>
+                <td >Category:</td>
+                <td><input type='text' onfocus="" value='Service'/></td>
+              </tr>
+              <tr>
+                <td >Quantity:</td>
+                <td><input type='text' onfocus="" value='1'/></td>
+              </tr>
+              <tr>
+                <td >Coupon:</td>
+                <td><input type='text' onfocus="" value='SERVICE20'/></td>
+              </tr>
+              <tr>
+                <td >Service Length:</td>
+                <td>
+                  <select name='service_len' id='service_len'>
+                    <option value=''>--Select Service Length--</option>
+                    <option value='12'>12 Months</option>
+                    <option value='24'>24 Months</option>
+                    <option value='36'>36 Months</option>
+                    <option value='48'>48 Months</option>
+                    <option value='60'>60 Months</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td >Payment:</td>
+                <td>
+                  <select name='payment' id='payment'>
+                    <option value=''>--Select Payment--</option>
+                    <option value='Credit Card'>Credit Card</option>
+                    <option value='Debit Card'>Debit Card</option>
+                    <option value='Cash'>Cash</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td >Store:</td>
+                <td>
+                  <select name='Store' id='store_name' onchange="document.getElementById('store_id').value=this.options[this.selectedIndex].id">
+                    <option value=''>--Select Store--</option>
+                    <option value='Brussels-Westland' id="026">Brussels-Westland</option>
+                    <option value='Drogenbos' id="002">Drogenbos</option>
+                    <option value='Brussels-Ixelles' id="001">Brussels-Ixelles</option>
+                    <option value='Brussels-City 2' id="007">Brussels-City 2</option>
+                    <option value='Brussels-Meiser' id="010">Brussels-Meiser</option>
+                  </select>
+                  <input type="hidden" id="store_id" value=""/>
+                </td>
+              </tr>
+            </table>
+            <select>
+              <option value="AddToCart">Add to Cart</option>
+              <option value="Checkout">Checkout</option>
+              <option value="CheckoutOption">Checkout Option</option>
+              <option value="Click">Click</option>
+              <option value="ViewDetail">View Detail</option>
+              <option value="Purchase">Purchase</option>
+              <option value="Refund">Refund</option>
+              <option value="AddToWishlist">Add to  Wishlist</option>
+              <option value="RemoveFromWishlist">Remove from Wishlist</option>
+              <option value="Unknown">Unknown</option>
+              <option value="Impression">*Impression</option>
+            </select>
+            <input type='submit' value='Product Action'/>
+          </form>
+        </div>
+        <div id='cart'>
+          <h3>Cart:</h3>
+        </div>
+        <input type='button' value='Purchase Cart' id='purchase-event'/>
+        <!--
+          <div>
+          <h2>UTM Attribution</h2>
+          <form id='UTM-test'>
+            <table>
+              <tr>
+                <td >Content:</td>
+                <td><input type='text' value='content'/></td>
+              </tr>
+              <tr>
+                <td >Medium:</td>
+                <td><input type='text' value='medium'/></td>
+              </tr>
+              <tr>
+                <td >Source:</td>
+                <td><input type='text' value='source'/></td>
+              </tr>
+              <tr>
+                <td >Campaign:</td>
+                <td><input type='text' value='campaign'/></td>
+              </tr>
+            </table>
+            <input type='submit' value='Add UTM Attribution'/>
+            <input type='button' value='Remove UTM Attribution' id='UTM-remove'/>
+          </form>
+        </div-->
+      <div style="visibility:hidden">
+      <h2>Previous Users:</h2>
+      <div>
+        <table>
+          <thead style="font-weight:bold" >
+            <tr>
+              <td>MPID</td>
+              <td>Customer ID</td>
+              <td>Email</td>
+              <td>DAS</td>
+            </tr>
+          </thead>
+          <tbody id="previous-users" >
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

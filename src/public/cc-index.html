@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="mParticle Single Page App"
+    />
+    <script type="text/javascript">
+      let WEBKEY = localStorage.mpKey ? localStorage.mpKey : "us2-5844b462fde9e846af3c4ed52516e61a"
+      window.mParticle = {
+        config: {
+          isDevelopmentMode: true,
+          identityCallback: function(result) {
+            let currentUser = result.getUser()
+              if (currentUser) {
+                let paramsToUAs = [
+                  "utm_source",
+                  "utm_medium",
+                  "utm_term",
+                  "utm_content",
+                  "utm_campaign",
+                  "gclid",
+                  "campaign_id"
+                ]
+                // Add UTM Attribution to UAs
+                let url = new URL(window.location.href)
+                url.searchParams.forEach((value,key)=>{
+                  if (paramsToUAs.includes(key)){
+                    currentUser.setUserAttribute(`$${key}`,value)
+                  }
+                })
+                request_user_profile(currentUser.getMPID())
+                //updateUserIdentites(currentUser)
+              }
+          }
+        }
+      };
+
+      (
+        function(t){window.mParticle=window.mParticle||{};
+        window.mParticle.EventType={Unknown:0,Navigation:1,Location:2,Search:3,Transaction:4,UserContent:5,UserPreference:6,Social:7,Other:8};
+        window.mParticle.eCommerce={Cart:{}};window.mParticle.Identity={};
+        window.mParticle.config=window.mParticle.config||{};
+        window.mParticle.config.rq=[];
+        window.mParticle.config.snippetVersion=2.2;
+        window.mParticle.ready=function(t){
+          window.mParticle.config.rq.push(t)
+        };
+        var e=["endSession","logError","logBaseEvent","logEvent","logForm","logLink","logPageView","setSessionAttribute","setAppName","setAppVersion","setOptOut","setPosition","startNewSession","startTrackingLocation","stopTrackingLocation"];
+        var o=["setCurrencyCode","logCheckout"];
+        var i=["identify","login","logout","modify"];
+        e.forEach(function(t){
+          window.mParticle[t]=n(t)
+        });
+        o.forEach(function(t){
+          window.mParticle.eCommerce[t]=n(t,"eCommerce")
+        });
+        i.forEach(function(t){
+          window.mParticle.Identity[t]=n(t,"Identity")
+        });
+        function n(e,o){
+          return function(){
+            if(o){e=o+"."+e}
+            var t=Array.prototype.slice.call(arguments);
+            t.unshift(e);
+            window.mParticle.config.rq.push(t)
+          }
+        }
+        var mp=document.createElement("script");
+        mp.type="text/javascript";
+        mp.async=true;
+        mp.src=("https:"==document.location.protocol?"https://jssdkcdns":"http://jssdkcdn")+".mparticle.com/js/v2/"+t+"/mparticle.js";
+        var c=document.getElementsByTagName("script")[0];
+        c.parentNode.insertBefore(mp,c)
+        mParticle.config.logLevel = 'verbose'
+      })(WEBKEY);
+    </script>
+    <script src='cc-index.js'></script>
+    <style>
+      .split {
+        height: 100%;
+        position: fixed;
+        z-index: 1;
+        overflow-x: hidden;
+      }
+
+      .left {
+        left: 350;
+        width: 60%;
+      }
+
+      .right {
+        width: 40%;
+        right: 0;
+      }
+      #current-user thead {
+        border: 1px solid black;
+      }
+      #current-user tbody {
+        border: 1px solid black;
+      }
+      #current-user tr {
+        border: 1px solid black;
+      }
+      #current-user th {
+        border: 1px solid black;
+      }
+      #current-user td {
+        border: 1px solid black;
+      }
+      #user-audiences thead {
+        border: 1px solid black;
+      }
+      #user-audiences tbody {
+        border: 1px solid black;
+      }
+      #user-audiences tr {
+        border: 1px solid black;
+      }
+      #user-audiences th {
+        border: 1px solid black;
+      }
+      #user-audiences td {
+        border: 1px solid black;
+      }
+      th, td {
+        border: 1px solid black;
+      }
+    </style>
+    <title>Call Centre Customer Profiling</title>
+  </head>
+  <body>
+    <h1><img src='img/kfc-logo02.png' style="width:180px;height:90px;">Call Centre Customer Profiling Application<img src='img/kfc-logo.png' style="width:60px;height:90px;"></h1>
+    <div class="split left">
+      <div>
+        <h2>User Search:</h2>
+        <form id='form-1'>
+          <table>
+            <tr>
+              <td>Mobile Number:</td>
+              <td><input type='text' onfocus="this.value='';this.flag=1" flag=0 value='<+9715xxxxxxxx>'/></td>
+            </tr>
+            <tr>
+              <td>Customer ID:</td>
+              <td><input type='text' onfocus="this.value='';this.flag=1" flag=0 value='<987xxxxxx>'/></td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td><input type='text' onfocus="this.value='';this.flag=1" flag=0 value='<demo@mp.com>'/></td>
+            </tr>
+            <tr>
+              <td>
+                <input type='submit' value='Search'/>
+                <input type='button' value='Reset' id='logout'/>
+              </td>
+            </tr>
+          </table>
+        </form>
+        <div>
+          <p>
+            <table id="current-user">
+            <tr>
+              <td>System ID:</td>
+              <td></td>
+              </tr>
+            <tr>
+              <td>Customer ID:</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Mobile:</td>
+              <td></td>
+            </tr>
+            </table>
+          </p>
+        </div>
+      </div>
+      <div>
+        <h2>R30. Agent Access To Individual Profiles - User Details:</h2>
+        <table id="user-profile" style="border: 1px solid black;table-layout:fixed;width:1024px">
+          <tbody>
+            <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+              <td rowspan="4" height="42" width="87" style="height:32.0pt;width:65pt"><b>Basic Info</b></td>
+              <td style=""><b>First Name</b></td>
+              <td style=""><b>Last Name</b></td>
+              <td style=""><b>No.</b></td>
+              <td style=""><b>Building</b></td>
+              <td style=""><b>Region</b></td>
+              <td style=""><b>Mobile</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+               <td height="21" style="height:16.0pt;">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+             </tr>
+             <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+               <td style=""><b>CLTV</b></td>
+               <td style=""><b>Average Order Value</b></td>
+               <td style=""><b># Orders</b></td>
+               <td style=""><b># Call Centre Orders</b></td>
+               <td style=""><b># Delivery</b></td>
+               <td style=""><b># Carhop</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt" style="border: 1px solid black;">
+               <td height="21" style="height:16.0pt;">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+             </tr>
+             <tr height="21" style="height:16.0pt">
+               <td rowspan="2" height="42" class="xl67" style="height:32.0pt;"><b>Recency</b></td>
+               <td style=""><b>Last Order Time</b></td>
+               <td style=""><b>Last Order Meal</b></td>
+               <td style=""><b>Last Order Store</b></td>
+               <td style=""><b>Last Delivery</b></td>
+               <td style=""><b>Last Order Value</b></td>
+               <td style=""><b>Last Order Method</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt">
+               <td height="21" class="xl65" style="height:16.0pt;">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+            </tr>
+             <tr height="21" style="height:16.0pt">
+               <td rowspan="2" height="42" class="xl67" style="height:32.0pt;"><b>Preference</b></td>
+               <td style=""><b>Favourite Meal</b></td>
+               <td style=""><b>Favourite Store</b></td>
+               <td style=""><b>Favourite Delivery</b></td>
+               <td style=""><b>Most Used Payment</b></td>
+               <td style=""><b>Next Best Offer</b></td>
+               <td style=""><b># Coupon Claims</b></td>
+             </tr>
+             <tr height="21" style="height:16.0pt">
+               <td height="21" class="xl65" style="height:16.0pt;">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+               <td style="">&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+        <h4>Add New Attribute</h2>
+        <table id="user-attributes">
+        </table>
+        <tr>
+          <td><input type='text' value='User Attribute Name' onfocus="this.value=''" id='ua-key'/></td>
+          <td><input type='text' value='User Attribute Value' onfocus="this.value=''"id='ua-value'/></td>
+          <td><input type='button' value='Add User Attribute' id='ua-add'/></td>
+        </tr>
+      </div>
+      <div>
+        <h2>Audience Membership:</h2>
+        <table id="user-audiences">
+         <thead>
+           <tr>
+             <td>Audience ID</td>
+             <td>Audience Name</td>
+           </tr>
+         </thead>
+         <tbody id="user-audiences-body" >
+         </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="split right">
+      <table>
+        <tr>
+          <td >Web Key:</td>
+          <td>
+            <form id="update-web-key">
+              <input type='text' value="" id='web-key' size="37"/>
+              <input type='submit' value="update" />
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type='button' value="Clear Cookies" id='clear-cookies' />
+          </td>
+          <td>
+            <input type='button' value="Clear Demo Users" id='clear-test-users' />
+          </td>
+        </tr>
+      </table>
+        <div>
+          <h2>Place Order:</h2>
+          <h4><img src='img/itm5000200.jpeg' style="width:90px;height:90px;">&nbsp;For Sharing</h3>
+          <form id='add-to-cart'>
+            <table>
+              <tr>
+                <td >Item:</td>
+                <td><input type='text' size="60" onfocus="" value='24 PCS BUCKET'/></td>
+              </tr>
+              <tr>
+                <td >Price:</td>
+                <td><input type='text' onfocus="" value='150.00'/></td>
+              </tr>
+              <tr>
+                <td >Category:</td>
+                <td><input type='text' onfocus="" value='Meal'/></td>
+              </tr>
+              <tr>
+                <td >Quantity:</td>
+                <td><input type='text' onfocus="" value='1'/></td>
+              </tr>
+              <tr>
+                <td >Coupon:</td>
+                <td><input type='text' onfocus="" value='VISA20'/></td>
+              </tr>
+              <tr>
+                <td >Delivery:</td>
+                <td>
+                  <select name='delivery' id='delivery'>
+                    <option value=''>--Select Serving Method--</option>
+                    <option value='Delivery'>Delivery</option>
+                    <option value='Carhop'>Carhop</option>
+                    <option value='Dine-In'>Dine-In</option>
+                    <option value='Drive-Thru'>Drive-Thru</option>
+                    <option value='Self-Pickup'>Self-Pickup</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td >Payment:</td>
+                <td>
+                  <select name='payment' id='payment'>
+                    <option value=''>--Select Payment--</option>
+                    <option value='Credit Card'>Credit Card</option>
+                    <option value='Debit Card'>Debit Card</option>
+                    <option value='Cash On Delivery'>Cash On Delivery</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td >Outlet:</td>
+                <td>
+                  <select name='outlet' id='outlet' onchange="document.getElementById('Store_ID').value=this.options[this.selectedIndex].id">
+                    <option value=''>--Select Outlet--</option>
+                    <option value='Al Warqaa - KFC' id="1524">Al Warqaa - KFC</option>
+                    <option value='Barsha South - Dubai' id="40">Barsha South</option>
+                    <option value='Jumeira Beach - Dubai' id="65">Jumeira Beach - Dubai</option>
+                  </select>
+                  <input type="hidden" id="Store_ID" value=""/>
+                </td>
+              </tr>
+              <tr>
+                <td >Car Plate Number:</td>
+                <td><input type='text' id="car_no" value='A24836'/></td>
+              </tr>
+              <tr>
+                <td >Car Colour:</td>
+                <td><input type='text' id="car_colour" onfocus="" value='Red'/></td>
+              </tr>
+              <tr>
+                <td >Car Maker:</td>
+                <td><input type='text' id="car_maker" onfocus="" value='Tesla'/></td>
+              </tr>
+            </table>
+            <select>
+              <option value="AddToCart">Add to Cart</option>
+              <option value="Checkout">Checkout</option>
+              <option value="CheckoutOption">Checkout Option</option>
+              <option value="Click">Click</option>
+              <option value="ViewDetail">View Detail</option>
+              <option value="Purchase">Purchase</option>
+              <option value="Refund">Refund</option>
+              <option value="AddToWishlist">Add to  Wishlist</option>
+              <option value="RemoveFromWishlist">Remove from Wishlist</option>
+              <option value="Unknown">Unknown</option>
+              <option value="Impression">*Impression</option>
+            </select>
+            <input type='submit' value='Product Action'/>
+          </form>
+        </div>
+        <div id='cart'>
+          <h3>Cart:</h3>
+        </div>
+        <input type='button' value='Purchase Cart' id='purchase-event'/>
+        <!--
+          <div>
+          <h2>UTM Attribution</h2>
+          <form id='UTM-test'>
+            <table>
+              <tr>
+                <td >Content:</td>
+                <td><input type='text' value='content'/></td>
+              </tr>
+              <tr>
+                <td >Medium:</td>
+                <td><input type='text' value='medium'/></td>
+              </tr>
+              <tr>
+                <td >Source:</td>
+                <td><input type='text' value='source'/></td>
+              </tr>
+              <tr>
+                <td >Campaign:</td>
+                <td><input type='text' value='campaign'/></td>
+              </tr>
+            </table>
+            <input type='submit' value='Add UTM Attribution'/>
+            <input type='button' value='Remove UTM Attribution' id='UTM-remove'/>
+          </form>
+        </div-->
+      <div style="visibility:hidden">
+      <h2>Previous Users:</h2>
+      <div>
+        <table>
+          <thead style="font-weight:bold" >
+            <tr>
+              <td>MPID</td>
+              <td>Customer ID</td>
+              <td>Email</td>
+              <td>DAS</td>
+            </tr>
+          </thead>
+          <tbody id="previous-users" >
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
