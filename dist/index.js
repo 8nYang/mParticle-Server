@@ -1219,16 +1219,25 @@ const app = https.createServer(options, function (request, response) {
   });
 }).listen(443);*/
 
+/*https
+    .createServer(
+        {
+          key: fs.readFileSync("/usr/local/etc/nginx/key.pem"),
+          cert: fs.readFileSync("/usr/local/etc/nginx/cert.pem"),
+        },
+        app
+    ).listen(443, ()=>{
+        console.log('server is runing at port 443')
+    });
 
-https.createServer({
-  key: fs.readFileSync("/usr/local/etc/nginx/key.pem"),
-  cert: fs.readFileSync("/usr/local/etc/nginx/cert.pem")
-}, app).listen(443, () => {
-  console.log('server is runing at port 443');
-});
-http.createServer(app).listen(80, () => {
-  console.log('server is runing at port 80');
-}); // log requests
+http
+    .createServer(
+        app
+    ).listen(80, ()=>{
+        console.log('server is runing at port 80')
+    });*/
+// log requests
+
 
 app.use(cors());
 app.use(logger('dev'));
